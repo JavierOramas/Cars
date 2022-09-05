@@ -107,11 +107,13 @@ def get_all_cars(dump=True):
                                             car_json["Generation"] = car_json["Generation"].replace("/", "_")
                                             # create folder for model if not exists
 
-                                            engine_size = details_soup.find("table", {"class":"keyspecs top"})
-                                            engine_size = engine_size.find_all("tr")[5]
-                                            engine_size = engine_size.find("td").text
-
-                                            car_json["Engine Size"] = engine_size
+                                            try:
+                                                engine_size = details_soup.find("table", {"class":"keyspecs top"})
+                                                engine_size = engine_size.find_all("tr")[5]
+                                                engine_size = engine_size.find("td").text
+                                                car_json["Engine Size"] = engine_size
+                                            except:
+                                                car_json["Engine Size"] = "N/D"
 
                                             image = details_soup.find("img", {"class":"inspecs"})
                                             # dowload image
