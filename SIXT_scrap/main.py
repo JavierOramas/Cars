@@ -53,9 +53,9 @@ def get_car_data(url):
                     car_json["FuelEco"] = "N/D"
                 
                 car_json["Description"].append(car.find("div", {"class":"vgVehicleAmenities"}).text)
-                image_path = car.find("div", {"class":"gblRemoved vgPopupImagePath"}).text.replace("/", "_")
+                image_path = car.find("div", {"class":"gblRemoved vgPopupImagePath"}).text
                 image_name = image_path.split("/")[-1]
-                car_json['Image'] = "images/" + car_json['Brand'] + "_" + image_name + ".jpg"
+                car_json['Image'] = "images/" + car_json['Brand'] + "_" + image_name.replace("/", "_") + ".jpg"
                 
                 details = car.find("div", {"class":"vgCarFeatures gblRemoved"})
                 details = details.find_all("li")
