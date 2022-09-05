@@ -1,4 +1,3 @@
-from tkinter import image_names
 import requests
 from bs4 import BeautifulSoup
 import json
