@@ -31,52 +31,55 @@ def get_all_cars(dump=True):
 
         json_data = {}
 
+        count = 0
         for brand in brands:
+            count += 1
+            print("Scraping Brand ", count, " of ", len(brands), "\n")
+            
             link = 'https://www.auto-data.net/'+brand.get('href')
             
             brand_page = requests.get(link)
             if brand_page.status_code == 200:
                 brand_soup = BeautifulSoup(brand_page.text, 'html.parser')
                 models = brand_soup.find_all('a', {"class": "modeli"})
-                
+
                 for model in models:
-                    sleep(3)
                     print("model: ", model.text)
+                    print()
+
                     model_page = requests.get(base+model.get("href"))
                     if model_page.status_code == 200:
                         model_soap = BeautifulSoup(model_page.text, "html.parser")
                         sub_models = model_soap.find_all("td", {"class":"i"})
                         for sub_model in sub_models:
+
                             print("sub model"+sub_model.text)
+                            print()
+
                             sub_model_link = sub_model.find("a").get("href")
-                            
+
                             print(base+sub_model_link)
                             sub_model_page = requests.get(base+sub_model_link)
-                            
+
                             if sub_model_page.status_code == 200:
                                 sub_model_soup = BeautifulSoup(sub_model_page.text, "html.parser")
-                                
+
                                 carslist = sub_model_soup.find("table", {"class":"carlist"})
-                                
-                                # print("carlist: ",carslist)
 
                                 if carslist != None:
                                     carslist = carslist.find_all("th", {"class":"i"})
 
-                                    print("\ncarlist: ",carslist)
-                                    
                                     carslist_links = []
                                     for car in carslist:
                                         carslist_links += car.find_all("a")
 
-                                    print("\ncarlist_links: ",carslist_links)
-
                                     for car in carslist_links:
+
                                         print("car "+car.text)
+                                        print()
+
                                         html = car.get("href")
                                         html = 'https://www.auto-data.net' + html
-                                        print("\n Car page: ", html)
-                                        
 
                                         sleep(3)
                                         details_page = requests.get(html)
@@ -85,6 +88,7 @@ def get_all_cars(dump=True):
                                             details = details_soup.find("table", {"class":"cardetailsout"})
                                             details = details.find_all("tr")
                                             car_json = {}
+
                                             for row in details:
                                                 try:
                                                     key = row.find("th").text.strip()
@@ -92,17 +96,23 @@ def get_all_cars(dump=True):
                                                     car_json[key] = value
                                                 except:
                                                     pass
-                                            print("\n\nCar Json: ", car_json)
+
                                             # replace " " with _ in brand
                                             car_json["Brand"] = car_json["Brand"].replace(" ", "_")
                                             car_json["Model"] = car_json["Model"].replace(" ", "_")
                                             car_json["Generation"] = car_json["Generation"].replace(" ", "_")
-                                            
+
                                             car_json["Brand"] = car_json["Brand"].replace("/", "_")
                                             car_json["Model"] = car_json["Model"].replace("/", "_")
                                             car_json["Generation"] = car_json["Generation"].replace("/", "_")
                                             # create folder for model if not exists
-    
+
+                                            engine_size = details_soup.find("table", {"class":"keyspecs top"})
+                                            engine_size = engine_size.find_all("tr")[5]
+                                            engine_size = engine_size.find("td").text
+
+                                            car_json["Engine Size"] = engine_size
+
                                             image = details_soup.find("img", {"class":"inspecs"})
                                             # dowload image
                                             if image != None:
@@ -119,8 +129,7 @@ def get_all_cars(dump=True):
                                                 print("image_path: ", image_path)
                                                 request.urlretrieve(image, image_path)
                                                 car_json["image"] = image_path
-    
-    
+
                                             if not os.path.exists(f'cars/{car_json["Brand"]}'):
                                                 print("creating folder for brand")
                                                 os.mkdir(f"cars/{car_json['Brand']}")
