@@ -41,7 +41,7 @@ def get_car_data(url):
                 
                 
                 car_json = {}
-                car_json['Brand'] = car.find("div", {"class":"vgVehicleNameOnly"}).text.replace(" ", "_").replace("\n", "").replace("\t", "")
+                car_json['Brand'] = car.find("div", {"class":"vgVehicleNameOnly"}).text.replace(" ", "_").replace("\n", "").replace("\t", "").replace("/", "_")
                 
                 print(car_json['Brand'])
                 print()
