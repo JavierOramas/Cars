@@ -94,6 +94,10 @@ def get_all_cars(dump=True):
                                             car_json["Brand"] = car_json["Brand"].replace(" ", "_")
                                             car_json["Model"] = car_json["Model"].replace(" ", "_")
                                             car_json["Generation"] = car_json["Generation"].replace(" ", "_")
+                                            
+                                            car_json["Brand"] = car_json["Brand"].replace("/", "_")
+                                            car_json["Model"] = car_json["Model"].replace("/", "_")
+                                            car_json["Generation"] = car_json["Generation"].replace("/", "_")
                                             # create folder for model if not exists
     
                                             image = details_soup.find("img", {"class":"inspecs"})
