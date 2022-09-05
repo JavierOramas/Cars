@@ -1,3 +1,4 @@
+from time import sleep
 import json
 from os import path
 import os
@@ -39,6 +40,7 @@ def get_all_cars(dump=True):
                 models = brand_soup.find_all('a', {"class": "modeli"})
                 
                 for model in models:
+                    sleep(3)
                     print("model: ", model.text)
                     model_page = requests.get(base+model.get("href"))
                     if model_page.status_code == 200:
@@ -76,6 +78,7 @@ def get_all_cars(dump=True):
                                         print("\n Car page: ", html)
                                         
 
+                                        sleep(3)
                                         details_page = requests.get(html)
                                         if details_page.status_code == 200:
                                             details_soup = BeautifulSoup(details_page.text, "html.parser")
