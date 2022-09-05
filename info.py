@@ -33,6 +33,7 @@ def get_all_cars(dump=True):
 
         count = 0
         for brand in brands:
+            sleep(2)
             count += 1
             print("Scraping Brand ", count, " of ", len(brands), "\n")
             
@@ -44,6 +45,7 @@ def get_all_cars(dump=True):
                 models = brand_soup.find_all('a', {"class": "modeli"})
 
                 for model in models:
+                    sleep(1)
                     print("model: ", model.text)
                     print()
 
@@ -81,7 +83,7 @@ def get_all_cars(dump=True):
                                         html = car.get("href")
                                         html = 'https://www.auto-data.net' + html
 
-                                        sleep(3)
+                                        sleep(5)
                                         details_page = requests.get(html)
                                         if details_page.status_code == 200:
                                             details_soup = BeautifulSoup(details_page.text, "html.parser")
